@@ -1,0 +1,18 @@
+{
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "node-fetch": "^3.3.2",
+    "twilio": "^4.20.0"
+  },
+  "name": "middle-service",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Servicio intermedio entre el cliente y las apis libres de Daviplata, con el fin de adjuntar los ssl correspondientes.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Andprez",
+  "license": "ISC"
+}
