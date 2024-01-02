@@ -71,29 +71,36 @@ function sslConfiguredAgent() {
   return new https.Agent(options);
 }
 
-async function generarToken(grant_type, client_id, client_secret, scope) {
+app.post("/generarToken", async (req, res) => {
+  let grant_type = req.body.grant_type;
+  let client_id = req.body.client_id;
+  let client_secret = req.body.client_secret;
+  let scope = req.body.scope;
+
   let url = baseUrl + "/oauth2Provider/type1/v1/token";
   const headers = {
     "Content-Type": "application/x-www-form-urlencoded",
     Accept: "application/json",
   };
-  try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: headers,
-      agent: sslConfiguredAgent(),
-      body: `grant_type=${grant_type}&client_id=${client_id}&client_secret=${client_secret}&scope=${scope}`,
-    });
+  const response = await fetch(url, {
+    method: "POST",
+    headers: headers,
+    agent: sslConfiguredAgent(),
+    body: `grant_type=${grant_type}&client_id=${client_id}&client_secret=${client_secret}&scope=${scope}`,
+  });
 
-    return await response.json().then((data) => {
-      return data;
-    });
-  } catch (error) {
-    return error;
-  }
-}
+  const responseData = await response.json();
 
-async function intencionCompra(token, customer_key, valor, numeroIdentificacion, tipoDocumento) {
+  res.json(responseData);
+});
+
+app.post("/intencionCompra", async (req, res) => {
+  let token = req.body.token;
+  let customer_key = req.body.customer_key;
+  let valor = req.body.valor;
+  let numeroIdentificacion = req.body.numeroIdentificacion;
+  let tipoDocumento = req.body.tipoDocumento;
+
   const headers = {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -107,52 +114,57 @@ async function intencionCompra(token, customer_key, valor, numeroIdentificacion,
   };
 
   let url = baseUrl + "/daviplata/v1/compra";
-  try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: headers,
-      agent: sslConfiguredAgent(),
-      body: JSON.stringify(data),
-    });
+  const response = await fetch(url, {
+    method: "POST",
+    headers: headers,
+    agent: sslConfiguredAgent(),
+    body: JSON.stringify(data),
+  });
 
-    return await response.json().then((data) => {
-      return data;
-    });
-  } catch (error) {
-    return error;
-  }
-}
+  const responseData = await response.json();
 
-async function generarOTP(customer_key, notification_type, numeroIdentificacion, tipoDocumento) {
+  res.json(responseData);
+});
+
+app.post("/generarOTP", async (req, res) => {
+  let customer_key = req.body.customer_key;
+  let notification_type = req.body.notification_type;
+  let numeroIdentificacion = req.body.numeroIdentificacion;
+  let tipoDocumento = req.body.tipoDocumento;
+
   const headers = {
     "Content-Type": "application/json",
     Accept: "application/json",
     "x-ibm-client-id": customer_key,
   };
-  const data = {
+  let data = {
     typeDocument: tipoDocumento,
     numberDocument: numeroIdentificacion,
     notificationType: notification_type,
   };
 
   let url = baseUrl + "/otpSec/v1/read";
-  try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: headers,
-      agent: sslConfiguredAgent(),
-      body: JSON.stringify(data),
-    });
+  const response = await fetch(url, {
+    method: "POST",
+    headers: headers,
+    agent: sslConfiguredAgent(),
+    body: JSON.stringify(data),
+  });
 
-    return await response.json().then((data) => {
-      return data;
-    });
-  } catch (error) {
-    return error;
-  }
-}
+  const responseData = await response.json();
 
-async function autorizacionCompra(token, otp, idSession_Token, customer_key, idComercio, idTerminal, idTransaccion) {
+  res.json(responseData);
+});
+
+app.post("/autorizacionCompra", async (req, res) => {
+  let token = req.body.token;
+  let otp = req.body.otp;
+  let idSession_Token = req.body.idSession_Token;
+  let customer_key = req.body.customer_key;
+  let idComercio = req.body.idComercio;
+  let idTerminal = req.body.idTerminal;
+  let idTransaccion = req.body.idTransaccion;
+
   const headers = {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -166,104 +178,258 @@ async function autorizacionCompra(token, otp, idSession_Token, customer_key, idC
     idTerminal: idTerminal,
     idTransaccion: idTransaccion,
   };
-
   let url = baseUrl + "/daviplata/v1/confirmarCompra";
-  try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: headers,
-      agent: sslConfiguredAgent(),
-      body: JSON.stringify(data),
-    });
-
-    return await response.json().then((data) => {
-      return data;
-    });
-  } catch (error) {
-    return error;
-  }
-}
-
-async function sendMSM(accountSid, authToken, from, to, body){
-  const client = twilio(accountSid, authToken);
-  client.messages.create({
-    body: body,
-    from: from,
-    to: to
-  })
-  .then((data) => {
-    if('body' in data){
-      return {status: 'success', message: 'OK'}
-    } else {
-      return {status: 'error', message: 'Error'}
-    }
+  const response = await fetch(url, {
+    method: "POST",
+    headers: headers,
+    agent: sslConfiguredAgent(),
+    body: JSON.stringify(data),
   });
-}
 
-app.post('/generarToken', (req, res) => {
-  let grant_type = req.body.grant_type;
-  let client_id = req.body.client_id;
-  let client_secret = req.body.client_secret;
-  let scope = req.body.scope;
-  generarToken(grant_type, client_id, client_secret, scope)
-    .then((data) => {
-      console.log('Data /generarToken: ', data);
-      res.json(data);
-    })
+  const responseData = await response.json();
+  
+  res.json(responseData);
 });
 
-app.post('/intencionCompra', (req, res) => {
-  let token = req.body.token;
-  let customer_key = req.body.customer_key;
-  let valor = req.body.valor;
-  let numeroIdentificacion = req.body.numeroIdentificacion;
-  let tipoDocumento = req.body.tipoDocumento;
-  intencionCompra(token, customer_key, valor, numeroIdentificacion, tipoDocumento)
-    .then((data) => {
-      console.log('Data /intencionCompra: ', data);
-      res.json(data);
-    })
-});
-
-app.post('/generarOTP', (req, res) => {
-  let customer_key = req.body.customer_key;
-  let notification_type = req.body.notification_type;
-  let numeroIdentificacion = req.body.numeroIdentificacion;
-  let tipoDocumento = req.body.tipoDocumento;
-  generarOTP(customer_key, notification_type, numeroIdentificacion, tipoDocumento)
-    .then((data) => {
-      console.log('Data /generarOTP: ', data);
-      res.json(data);
-    })
-});
-
-app.post('/sendMSM', (req, res) => {
+app.post("/sendSMS", async (req, res) => {
   let accountSid = req.body.accountSid;
   let authToken = req.body.authToken;
   let from = req.body.from;
   let to = req.body.to;
   let body = req.body.body;
-  sendMSM(accountSid, authToken, from, to, body)
-    .then((data) => {
-      console.log('Data /sendMSM: ', data);
-      res.json(data);
+
+  const client = twilio(accountSid, authToken);
+  client.messages
+    .create({
+      body: body,
+      from: from,
+      to: to,
     })
+    .then((data) => {
+      if ("body" in data) {
+        return { status: "success", message: "OK" };
+      } else {
+        return { status: "error", message: "Error" };
+      }
+    });
 });
 
-app.post('/autorizacionCompra', (req, res) => {
-  let token = req.body.token;
-  let otp = req.body.otp;
-  let idSession_Token = req.body.idSession_Token;
-  let customer_key = req.body.customer_key;
-  let idComercio = req.body.idComercio;
-  let idTerminal = req.body.idTerminal;
-  let idTransaccion = req.body.idTransaccion;
-  autorizacionCompra(token, otp, idSession_Token, customer_key, idComercio, idTerminal, idTransaccion)
-    .then((data) => {
-      console.log('Data /autorizacionCompra: ', data);
-      res.json(data);
-    })
-});
+// async function generarToken(grant_type, client_id, client_secret, scope) {
+//   let url = baseUrl + "/oauth2Provider/type1/v1/token";
+//   const headers = {
+//     "Content-Type": "application/x-www-form-urlencoded",
+//     Accept: "application/json",
+//   };
+//   try {
+//     const response = await fetch(url, {
+//       method: "POST",
+//       headers: headers,
+//       agent: sslConfiguredAgent(),
+//       body: `grant_type=${grant_type}&client_id=${client_id}&client_secret=${client_secret}&scope=${scope}`,
+//     });
+
+//     return await response.json().then((data) => {
+//       return data;
+//     });
+//   } catch (error) {
+//     return error;
+//   }
+// }
+
+// async function intencionCompra(
+//   token,
+//   customer_key,
+//   valor,
+//   numeroIdentificacion,
+//   tipoDocumento
+// ) {
+//   const headers = {
+//     "Content-Type": "application/json",
+//     Accept: "application/json",
+//     "x-ibm-client-id": customer_key,
+//     Authorization: `Bearer ${token}`,
+//   };
+//   let data = {
+//     valor: valor,
+//     numeroIdentificacion: numeroIdentificacion,
+//     tipoDocumento: tipoDocumento,
+//   };
+
+//   let url = baseUrl + "/daviplata/v1/compra";
+//   try {
+//     const response = await fetch(url, {
+//       method: "POST",
+//       headers: headers,
+//       agent: sslConfiguredAgent(),
+//       body: JSON.stringify(data),
+//     });
+
+//     return await response.json().then((data) => {
+//       return data;
+//     });
+//   } catch (error) {
+//     return error;
+//   }
+// }
+
+// async function generarOTP(
+//   customer_key,
+//   notification_type,
+//   numeroIdentificacion,
+//   tipoDocumento
+// ) {
+//   const headers = {
+//     "Content-Type": "application/json",
+//     Accept: "application/json",
+//     "x-ibm-client-id": customer_key,
+//   };
+//   const data = {
+//     typeDocument: tipoDocumento,
+//     numberDocument: numeroIdentificacion,
+//     notificationType: notification_type,
+//   };
+
+//   let url = baseUrl + "/otpSec/v1/read";
+//   try {
+//     const response = await fetch(url, {
+//       method: "POST",
+//       headers: headers,
+//       agent: sslConfiguredAgent(),
+//       body: JSON.stringify(data),
+//     });
+
+//     return await response.json().then((data) => {
+//       return data;
+//     });
+//   } catch (error) {
+//     return error;
+//   }
+// }
+
+// async function autorizacionCompra(
+//   token,
+//   otp,
+//   idSession_Token,
+//   customer_key,
+//   idComercio,
+//   idTerminal,
+//   idTransaccion
+// ) {
+//   const headers = {
+//     "Content-Type": "application/json",
+//     Accept: "application/json",
+//     "x-ibm-client-id": customer_key,
+//     Authorization: `Bearer ${token}`,
+//   };
+//   const data = {
+//     otp: otp,
+//     idSessionToken: idSession_Token,
+//     idComercio: idComercio,
+//     idTerminal: idTerminal,
+//     idTransaccion: idTransaccion,
+//   };
+
+//   let url = baseUrl + "/daviplata/v1/confirmarCompra";
+//   try {
+//     const response = await fetch(url, {
+//       method: "POST",
+//       headers: headers,
+//       agent: sslConfiguredAgent(),
+//       body: JSON.stringify(data),
+//     });
+
+//     return await response.json().then((data) => {
+//       return data;
+//     });
+//   } catch (error) {
+//     return error;
+//   }
+// }
+
+// async function sendMSM(accountSid, authToken, from, to, body) {
+//   const client = twilio(accountSid, authToken);
+//   client.messages
+//     .create({
+//       body: body,
+//       from: from,
+//       to: to,
+//     })
+//     .then((data) => {
+//       if ("body" in data) {
+//         return { status: "success", message: "OK" };
+//       } else {
+//         return { status: "error", message: "Error" };
+//       }
+//     });
+// }
+
+// app.post("/intencionCompra", (req, res) => {
+//   let token = req.body.token;
+//   let customer_key = req.body.customer_key;
+//   let valor = req.body.valor;
+//   let numeroIdentificacion = req.body.numeroIdentificacion;
+//   let tipoDocumento = req.body.tipoDocumento;
+//   intencionCompra(
+//     token,
+//     customer_key,
+//     valor,
+//     numeroIdentificacion,
+//     tipoDocumento
+//   ).then((data) => {
+//     console.log("Data /intencionCompra: ", data);
+//     res.json(data);
+//   });
+// });
+
+// app.post("/generarOTP", (req, res) => {
+//   let customer_key = req.body.customer_key;
+//   let notification_type = req.body.notification_type;
+//   let numeroIdentificacion = req.body.numeroIdentificacion;
+//   let tipoDocumento = req.body.tipoDocumento;
+//   generarOTP(
+//     customer_key,
+//     notification_type,
+//     numeroIdentificacion,
+//     tipoDocumento
+//   ).then((data) => {
+//     console.log("Data /generarOTP: ", data);
+//     res.json(data);
+//   });
+// });
+
+// app.post("/sendMSM", (req, res) => {
+//   let accountSid = req.body.accountSid;
+//   let authToken = req.body.authToken;
+//   let from = req.body.from;
+//   let to = req.body.to;
+//   let body = req.body.body;
+//   sendMSM(accountSid, authToken, from, to, body).then((data) => {
+//     console.log("Data /sendMSM: ", data);
+//     res.json(data);
+//   });
+// });
+
+// app.post("/autorizacionCompra", (req, res) => {
+//   let token = req.body.token;
+//   let otp = req.body.otp;
+//   let idSession_Token = req.body.idSession_Token;
+//   let customer_key = req.body.customer_key;
+//   let idComercio = req.body.idComercio;
+//   let idTerminal = req.body.idTerminal;
+//   let idTransaccion = req.body.idTransaccion;
+//   autorizacionCompra(
+//     token,
+//     otp,
+//     idSession_Token,
+//     customer_key,
+//     idComercio,
+//     idTerminal,
+//     idTransaccion
+//   ).then((data) => {
+//     console.log("Data /autorizacionCompra: ", data);
+//     res.json(data);
+//   });
+// });
 
 app.listen(port, () => {
   console.log(`Servidor escuchando en http://localhost:${port}`);
