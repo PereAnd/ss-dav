@@ -134,7 +134,7 @@ app.post("/generarOTP", async (req, res) => {
 
   const headers = {
     "Content-Type": "application/json",
-    Accept: "application/json",
+    "Accept": "application/json",
     "x-ibm-client-id": customer_key,
   };
   let data = {
@@ -148,7 +148,7 @@ app.post("/generarOTP", async (req, res) => {
     method: "POST",
     headers: headers,
     agent: sslConfiguredAgent(),
-    body: JSON.stringify(data),
+    body: JSON.stringify(data)
   });
 
   const responseData = await response.json();
@@ -213,6 +213,30 @@ app.post("/sendSMS", async (req, res) => {
       }
     });
 });
+
+// --------------------------------------------------------------------------------------
+// VARIABLES DE ENTORNO -----------------------------------------------------------------
+// const GRANT_TYPE = 'client_credentials'
+// const CLIENT_ID = 'B9lAAOSf5oyOXYNdrAoMB2YxpI0cAKXDgp5ol9NIQsGpxEGo';
+// const CLIENT_SECRET = 'HfmvLkYR1hNWJ6ORnq5289IrGLRfeRz8GAAJkUea0J5wwTE3HVgzQqj2zH6AFULy';
+// const SCOPE = 'daviplata';
+
+// const numeroIdentificacion = '1134568019';
+// const tipoDocumento = '01';
+// const notification_type = 'API_DAVIPLATA';
+// const idComercio = '0010203040';
+// const idTerminal = 'ESB10934';
+// const idTransaccion = Math.round(Math.random() * 1000000);
+
+// const token_prov = 'FdIBGZQVaN9gfgBYj39mGrGQnlMt';
+// const idSession_Token = '96688628';
+// const otp = '656967';
+// --------------------------------------------------------------------------------------
+
+// generarToken(GRANT_TYPE, CLIENT_ID, CLIENT_SECRET, SCOPE);
+// intencionCompra(token_prov, CLIENT_ID, "50", numeroIdentificacion, tipoDocumento);
+// generarOTP(CLIENT_ID, notification_type, numeroIdentificacion, tipoDocumento);
+// autorizacionCompra(token_prov, otp, idSession_Token, CLIENT_ID, idComercio, idTerminal, idTransaccion);
 
 // async function generarToken(grant_type, client_id, client_secret, scope) {
 //   let url = baseUrl + "/oauth2Provider/type1/v1/token";
