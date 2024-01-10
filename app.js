@@ -214,8 +214,13 @@ app.post("/sendSMS", async (req, res) => {
     });
 });
 
+app.listen(port, () => {
+  console.log(`Servidor escuchando en http://localhost:${port}`);
+});
+
 // --------------------------------------------------------------------------------------
 // VARIABLES DE ENTORNO -----------------------------------------------------------------
+// const urlMiddleDav = 'http://localhost:3000'
 // const GRANT_TYPE = 'client_credentials'
 // const CLIENT_ID = 'B9lAAOSf5oyOXYNdrAoMB2YxpI0cAKXDgp5ol9NIQsGpxEGo';
 // const CLIENT_SECRET = 'HfmvLkYR1hNWJ6ORnq5289IrGLRfeRz8GAAJkUea0J5wwTE3HVgzQqj2zH6AFULy';
@@ -455,6 +460,3 @@ app.post("/sendSMS", async (req, res) => {
 //   });
 // });
 
-app.listen(port, () => {
-  console.log(`Servidor escuchando en http://localhost:${port}`);
-});
