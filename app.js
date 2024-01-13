@@ -197,6 +197,7 @@ app.post("/sendSMS", async (req, res) => {
   let from = req.body.from;
   let to = req.body.to;
   let body = req.body.body;
+  console.log(from, to, body);
 
   const client = twilio(accountSid, authToken);
   client.messages
