@@ -77,6 +77,15 @@ app.post("/generarToken", async (req, res) => {
   let client_secret = req.body.client_secret;
   let scope = req.body.scope;
 
+  console.log({
+    endpoint: "/generarToken",
+    timestamp: new Date(),
+    grant_type: grant_type,
+    client_id: client_id,
+    client_secret: client_secret,
+    scope: scope,
+  });
+
   let url = baseUrl + "/oauth2Provider/type1/v1/token";
   const headers = {
     "Content-Type": "application/x-www-form-urlencoded",
@@ -100,6 +109,16 @@ app.post("/intencionCompra", async (req, res) => {
   let valor = req.body.valor;
   let numeroIdentificacion = req.body.numeroIdentificacion;
   let tipoDocumento = req.body.tipoDocumento;
+
+  console.log({
+    endpoint: "/intencionCompra",
+    timestamp: new Date(),
+    token: token,
+    customer_key: customer_key,
+    valor: valor,
+    numeroIdentificacion: numeroIdentificacion,
+    tipoDocumento: tipoDocumento,
+  });
 
   const headers = {
     "Content-Type": "application/json",
@@ -131,6 +150,15 @@ app.post("/generarOTP", async (req, res) => {
   let notification_type = req.body.notification_type;
   let numeroIdentificacion = req.body.numeroIdentificacion;
   let tipoDocumento = req.body.tipoDocumento;
+
+  console.log({
+    endpoint: "/generarOTP",
+    timestamp: new Date(),
+    customer_key: customer_key,
+    notification_type: notification_type,
+    numeroIdentificacion: numeroIdentificacion,
+    tipoDocumento: tipoDocumento,
+  });
 
   const headers = {
     "Content-Type": "application/json",
@@ -164,6 +192,18 @@ app.post("/autorizacionCompra", async (req, res) => {
   let idComercio = req.body.idComercio;
   let idTerminal = req.body.idTerminal;
   let idTransaccion = req.body.idTransaccion;
+
+  console.log({
+    endpoint: "/autorizacionCompra",
+    timestamp: new Date(),
+    token: token,
+    otp: otp,
+    idSession_Token: idSession_Token,
+    customer_key: customer_key,
+    idComercio: idComercio,
+    idTerminal: idTerminal,
+    idTransaccion: idTransaccion,
+  });
 
   const headers = {
     "Content-Type": "application/json",
