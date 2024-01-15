@@ -163,7 +163,7 @@ app.post("/autorizacionCompra", async (req, res) => {
   let customer_key = req.body.customer_key;
   let idComercio = req.body.idComercio;
   let idTerminal = req.body.idTerminal;
-  let idTransaccion = req.body.idTransaccion;
+  let idTransaccion = Math.floor(Math.random() * 1000000); // Ajustar que sea consecutivo
 
   const headers = {
     "Content-Type": "application/json",
