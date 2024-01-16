@@ -100,6 +100,7 @@ app.post("/generarToken", async (req, res) => {
 
   const responseData = await response.json();
 
+  console.log(responseData);
   res.json(responseData);
 });
 
@@ -142,6 +143,7 @@ app.post("/intencionCompra", async (req, res) => {
 
   const responseData = await response.json();
 
+  console.log(responseData);
   res.json(responseData);
 });
 
@@ -181,6 +183,7 @@ app.post("/generarOTP", async (req, res) => {
 
   const responseData = await response.json();
 
+  console.log(responseData);
   res.json(responseData);
 });
 
@@ -228,6 +231,7 @@ app.post("/autorizacionCompra", async (req, res) => {
 
   const responseData = await response.json();
   
+  console.log(responseData);
   res.json(responseData);
 });
 
