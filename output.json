@@ -7,10 +7,7 @@
         "fechaTransaccion": "2024-01-16T20:31:22.063Z",
         "numeroAprobacion": 0,
         "estado": "Rechazado - Tarjeta Invalida",
-        "idTransaccionAutorizador": 0
-    },
-    "error": {
-        "codigoError": "14",
-        "mensajeError": "Tarjeta Invalida"
+        "idTransaccionAutorizador": 0,
+        "codigoError": ""
     }
 }

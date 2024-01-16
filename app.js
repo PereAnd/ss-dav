@@ -249,11 +249,9 @@ app.post("/autorizacionCompra", async (req, res) => {
       "fechaTransaccion": responseData.fechaTransaccion ? responseData.fechaTransaccion : new Date(),
       "numeroAprobacion": responseData.numAprobacion ? responseData.numAprobacion : 0,
       "estado": responseData.estado ? responseData.estado : `Rechazado - ${responseData.mensajeError}`,
-      "idTransaccionAutorizador": responseData.idTransaccionAutorizador ? responseData.idTransaccionAutorizador : 0
-    },
-    'error': {
-      "codigoError": responseData.codigoError,
-      "mensajeError": responseData.mensajeError
+      "idTransaccionAutorizador": responseData.idTransaccionAutorizador ? responseData.idTransaccionAutorizador : 0,
+      "codigoError": responseData.codigoError ? responseData.codigoError : 0,
+      "mensajeError": responseData.mensajeError ? responseData.mensajeError : ""
     }
   }
   
