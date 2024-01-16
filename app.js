@@ -241,14 +241,20 @@ app.post("/autorizacionCompra", async (req, res) => {
   const responseData = await response.json();
 
   let resp = {
-    "idTransaccion": idTransaccion,
-    "destinoPago": idComercio,
-    "valorCompra": valorCompra,
-    "motivo": "Compra de productos",
-    "fechaTransaccion": responseData.fechaTransaccion ? responseData.fechaTransaccion : new Date(),
-    "numeroAprobacion": responseData.numAprobacion ? responseData.numAprobacion : 0,
-    "estado": responseData.estado ? responseData.estado : `Rechazado - ${responseData.mensajeError}`,
-    "idTransaccionAutorizador": responseData.idTransaccionAutorizador ? responseData.idTransaccionAutorizador : 0
+    'transaccion': {
+      "idTransaccion": idTransaccion,
+      "destinoPago": idComercio,
+      "valorCompra": valorCompra,
+      "motivo": "Compra de productos",
+      "fechaTransaccion": responseData.fechaTransaccion ? responseData.fechaTransaccion : new Date(),
+      "numeroAprobacion": responseData.numAprobacion ? responseData.numAprobacion : 0,
+      "estado": responseData.estado ? responseData.estado : `Rechazado - ${responseData.mensajeError}`,
+      "idTransaccionAutorizador": responseData.idTransaccionAutorizador ? responseData.idTransaccionAutorizador : 0
+    },
+    'error': {
+      "codigoError": responseData.codigoError,
+      "mensajeError": responseData.mensajeError
+    }
   }
   
   console.log(resp);
