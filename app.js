@@ -239,7 +239,7 @@ app.post("/autorizacionCompra", async (req, res) => {
   });
 
   const responseData = await response.json();
-
+  console.log(responseData);
   let resp = {
     'transaccion': {
       "idTransaccion": idTransaccion,
