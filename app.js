@@ -7,6 +7,7 @@ import twilio from "twilio";
 
 const app = express();
 const port = 3000;
+let valorCompra = 0;
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -77,6 +78,16 @@ app.post("/generarToken", async (req, res) => {
   let client_secret = req.body.client_secret;
   let scope = req.body.scope;
 
+  console.log('------------------------------------');
+  console.log({
+    endpoint: "/generarToken",
+    timestamp: new Date(),
+    grant_type: grant_type,
+    client_id: client_id,
+    client_secret: client_secret,
+    scope: scope,
+  });
+
   let url = baseUrl + "/oauth2Provider/type1/v1/token";
   const headers = {
     "Content-Type": "application/x-www-form-urlencoded",
@@ -91,6 +102,8 @@ app.post("/generarToken", async (req, res) => {
 
   const responseData = await response.json();
 
+  console.log(responseData);
+  console.log('------------------------------------');
   res.json(responseData);
 });
 
@@ -100,6 +113,18 @@ app.post("/intencionCompra", async (req, res) => {
   let valor = req.body.valor;
   let numeroIdentificacion = req.body.numeroIdentificacion;
   let tipoDocumento = req.body.tipoDocumento;
+
+  console.log('------------------------------------');
+  console.log({
+    endpoint: "/intencionCompra",
+    timestamp: new Date(),
+    token: token,
+    customer_key: customer_key,
+    valor: valor,
+    numeroIdentificacion: numeroIdentificacion,
+    tipoDocumento: tipoDocumento,
+  });
+  valorCompra = valor;
 
   const headers = {
     "Content-Type": "application/json",
@@ -123,6 +148,8 @@ app.post("/intencionCompra", async (req, res) => {
 
   const responseData = await response.json();
 
+  console.log(responseData);
+  console.log('------------------------------------');
   res.json(responseData);
 });
 
@@ -131,6 +158,16 @@ app.post("/generarOTP", async (req, res) => {
   let notification_type = req.body.notification_type;
   let numeroIdentificacion = req.body.numeroIdentificacion;
   let tipoDocumento = req.body.tipoDocumento;
+
+  console.log('------------------------------------');
+  console.log({
+    endpoint: "/generarOTP",
+    timestamp: new Date(),
+    customer_key: customer_key,
+    notification_type: notification_type,
+    numeroIdentificacion: numeroIdentificacion,
+    tipoDocumento: tipoDocumento,
+  });
 
   const headers = {
     "Content-Type": "application/json",
@@ -153,6 +190,8 @@ app.post("/generarOTP", async (req, res) => {
 
   const responseData = await response.json();
 
+  console.log(responseData);
+  console.log('------------------------------------');
   res.json(responseData);
 });
 
@@ -163,7 +202,20 @@ app.post("/autorizacionCompra", async (req, res) => {
   let customer_key = req.body.customer_key;
   let idComercio = req.body.idComercio;
   let idTerminal = req.body.idTerminal;
-  let idTransaccion = Math.floor(Math.random() * 1000000); // Ajustar que sea consecutivo
+  let idTransaccion = Math.floor(Math.random() * 1000000);
+
+  console.log('------------------------------------');
+  console.log({
+    endpoint: "/autorizacionCompra",
+    timestamp: new Date(),
+    token: token,
+    otp: otp,
+    idSession_Token: idSession_Token,
+    customer_key: customer_key,
+    idComercio: idComercio,
+    idTerminal: idTerminal,
+    idTransaccion: idTransaccion,
+  });
 
   const headers = {
     "Content-Type": "application/json",
@@ -187,8 +239,21 @@ app.post("/autorizacionCompra", async (req, res) => {
   });
 
   const responseData = await response.json();
+
+  let resp = {
+    "idTransaccion": idTransaccion,
+    "destinoPago": idComercio,
+    "valorCompra": valorCompra,
+    "motivo": "Compra de productos",
+    "fechaTransaccion": responseData.fechaTransaccion ? responseData.fechaTransaccion : new Date(),
+    "numeroAprobacion": responseData.numAprobacion ? responseData.numAprobacion : 0,
+    "estado": responseData.estado ? responseData.estado : `Rechazado - ${responseData.mensajeError}`,
+    "idTransaccionAutorizador": responseData.idTransaccionAutorizador ? responseData.idTransaccionAutorizador : 0
+  }
   
-  res.json(responseData);
+  console.log(resp);
+  console.log('------------------------------------');
+  res.json(resp);
 });
 
 app.post("/sendSMS", async (req, res) => {
