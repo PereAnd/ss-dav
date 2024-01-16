@@ -77,6 +77,7 @@ app.post("/generarToken", async (req, res) => {
   let client_secret = req.body.client_secret;
   let scope = req.body.scope;
 
+  console.log('------------------------------------');
   console.log({
     endpoint: "/generarToken",
     timestamp: new Date(),
@@ -101,6 +102,7 @@ app.post("/generarToken", async (req, res) => {
   const responseData = await response.json();
 
   console.log(responseData);
+  console.log('------------------------------------');
   res.json(responseData);
 });
 
@@ -111,6 +113,7 @@ app.post("/intencionCompra", async (req, res) => {
   let numeroIdentificacion = req.body.numeroIdentificacion;
   let tipoDocumento = req.body.tipoDocumento;
 
+  console.log('------------------------------------');
   console.log({
     endpoint: "/intencionCompra",
     timestamp: new Date(),
@@ -144,6 +147,7 @@ app.post("/intencionCompra", async (req, res) => {
   const responseData = await response.json();
 
   console.log(responseData);
+  console.log('------------------------------------');
   res.json(responseData);
 });
 
@@ -153,6 +157,7 @@ app.post("/generarOTP", async (req, res) => {
   let numeroIdentificacion = req.body.numeroIdentificacion;
   let tipoDocumento = req.body.tipoDocumento;
 
+  console.log('------------------------------------');
   console.log({
     endpoint: "/generarOTP",
     timestamp: new Date(),
@@ -184,6 +189,7 @@ app.post("/generarOTP", async (req, res) => {
   const responseData = await response.json();
 
   console.log(responseData);
+  console.log('------------------------------------');
   res.json(responseData);
 });
 
@@ -194,8 +200,9 @@ app.post("/autorizacionCompra", async (req, res) => {
   let customer_key = req.body.customer_key;
   let idComercio = req.body.idComercio;
   let idTerminal = req.body.idTerminal;
-  let idTransaccion = req.body.idTransaccion;
+  let idTransaccion = Math.floor(Math.random() * 1000000);
 
+  console.log('------------------------------------');
   console.log({
     endpoint: "/autorizacionCompra",
     timestamp: new Date(),
@@ -232,6 +239,7 @@ app.post("/autorizacionCompra", async (req, res) => {
   const responseData = await response.json();
   
   console.log(responseData);
+  console.log('------------------------------------');
   res.json(responseData);
 });
 
