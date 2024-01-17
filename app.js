@@ -202,7 +202,7 @@ app.post("/autorizacionCompra", async (req, res) => {
   let customer_key = req.body.customer_key;
   let idComercio = req.body.idComercio;
   let idTerminal = req.body.idTerminal;
-  let idTransaccion = Math.floor(Math.random() * 1000000);
+  let idTransaccion = Math.floor(Math.random() * 999999) + 1;
 
   console.log('------------------------------------');
   console.log({
@@ -214,7 +214,7 @@ app.post("/autorizacionCompra", async (req, res) => {
     customer_key: customer_key,
     idComercio: idComercio,
     idTerminal: idTerminal,
-    idTransaccion: idTransaccion,
+    idTransaccion: idTransaccion + 0,
   });
 
   const headers = {

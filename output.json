@@ -1,13 +1,14 @@
 {
     "transaccion": {
-        "idTransaccion": 834859,
+        "idTransaccion": 260957,
         "destinoPago": "0010203040",
         "valorCompra": "1",
         "motivo": "Compra de productos",
-        "fechaTransaccion": "2024-01-16T20:31:22.063Z",
+        "fechaTransaccion": "2024-01-16T22:15:12.592Z",
         "numeroAprobacion": 0,
-        "estado": "Rechazado - Tarjeta Invalida",
+        "estado": "Rechazado - Rechazo General",
         "idTransaccionAutorizador": 0,
-        "codigoError": ""
+        "codigoError": "05",
+        "mensajeError": "Rechazo General"
     }
 }
