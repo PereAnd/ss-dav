@@ -8,6 +8,7 @@ import twilio from "twilio";
 const app = express();
 const port = 3000;
 let valorCompra = 0;
+let clientIP = "";
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -77,15 +78,19 @@ app.post("/generarToken", async (req, res) => {
   let client_id = req.body.client_id;
   let client_secret = req.body.client_secret;
   let scope = req.body.scope;
+  clientIP = req.ip || req.socket.remoteAddress;
 
   console.log('------------------------------------');
   console.log({
-    endpoint: "/generarToken",
-    timestamp: new Date(),
     grant_type: grant_type,
     client_id: client_id,
     client_secret: client_secret,
     scope: scope,
+    metadata: {
+      endpoint: "/generarToken",
+      timestamp: new Date(),
+      clientIP: clientIP
+    }
   });
 
   let url = baseUrl + "/oauth2Provider/type1/v1/token";
@@ -113,16 +118,20 @@ app.post("/intencionCompra", async (req, res) => {
   let valor = req.body.valor;
   let numeroIdentificacion = req.body.numeroIdentificacion;
   let tipoDocumento = req.body.tipoDocumento;
+  clientIP = req.ip || req.socket.remoteAddress;
 
   console.log('------------------------------------');
   console.log({
-    endpoint: "/intencionCompra",
-    timestamp: new Date(),
     token: token,
     customer_key: customer_key,
     valor: valor,
     numeroIdentificacion: numeroIdentificacion,
     tipoDocumento: tipoDocumento,
+    metadata: {
+      endpoint: "/generarToken",
+      timestamp: new Date(),
+      clientIP: clientIP
+    }
   });
   valorCompra = valor;
 
@@ -158,15 +167,19 @@ app.post("/generarOTP", async (req, res) => {
   let notification_type = req.body.notification_type;
   let numeroIdentificacion = req.body.numeroIdentificacion;
   let tipoDocumento = req.body.tipoDocumento;
+  clientIP = req.ip || req.socket.remoteAddress;
 
   console.log('------------------------------------');
   console.log({
-    endpoint: "/generarOTP",
-    timestamp: new Date(),
     customer_key: customer_key,
     notification_type: notification_type,
     numeroIdentificacion: numeroIdentificacion,
     tipoDocumento: tipoDocumento,
+    metadata: {
+      endpoint: "/generarToken",
+      timestamp: new Date(),
+      clientIP: clientIP
+    }
   });
 
   const headers = {
@@ -203,11 +216,10 @@ app.post("/autorizacionCompra", async (req, res) => {
   let idComercio = req.body.idComercio;
   let idTerminal = req.body.idTerminal;
   let idTransaccion = Math.floor(Math.random() * 999999) + 1;
+  clientIP = req.ip || req.socket.remoteAddress;
 
   console.log('------------------------------------');
   console.log({
-    endpoint: "/autorizacionCompra",
-    timestamp: new Date(),
     token: token,
     otp: otp,
     idSession_Token: idSession_Token,
@@ -215,6 +227,11 @@ app.post("/autorizacionCompra", async (req, res) => {
     idComercio: idComercio,
     idTerminal: idTerminal,
     idTransaccion: idTransaccion + 0,
+    metadata: {
+      endpoint: "/generarToken",
+      timestamp: new Date(),
+      clientIP: clientIP
+    }
   });
 
   const headers = {
