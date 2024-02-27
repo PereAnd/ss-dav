@@ -80,7 +80,7 @@ app.post("/generarToken", async (req, res) => {
   let scope = req.body.scope;
   clientIP = req.ip || req.socket.remoteAddress;
 
-  console.log('------------------------------------');
+  console.log("------------------------------------");
   console.log({
     grant_type: grant_type,
     client_id: client_id,
@@ -89,27 +89,31 @@ app.post("/generarToken", async (req, res) => {
     metadata: {
       endpoint: "/generarToken",
       timestamp: new Date(),
-      clientIP: clientIP
-    }
+      clientIP: clientIP,
+    },
   });
 
-  let url = baseUrl + "/oauth2Provider/type1/v1/token";
-  const headers = {
-    "Content-Type": "application/x-www-form-urlencoded",
-    Accept: "application/json",
-  };
-  const response = await fetch(url, {
-    method: "POST",
-    headers: headers,
-    agent: sslConfiguredAgent(),
-    body: `grant_type=${grant_type}&client_id=${client_id}&client_secret=${client_secret}&scope=${scope}`,
-  });
+  try {
+    let url = baseUrl + "/oauth2Provider/type1/v1/token";
+    const headers = {
+      "Content-Type": "application/x-www-form-urlencoded",
+      Accept: "application/json",
+    };
+    const response = await fetch(url, {
+      method: "POST",
+      headers: headers,
+      agent: sslConfiguredAgent(),
+      body: `grant_type=${grant_type}&client_id=${client_id}&client_secret=${client_secret}&scope=${scope}`,
+    });
 
-  const responseData = await response.json();
+    const responseData = await response.json();
 
-  console.log(responseData);
-  console.log('------------------------------------');
-  res.json(responseData);
+    console.log(responseData);
+    console.log("------------------------------------");
+    res.json(responseData);
+  } catch (e) {
+    res.status(500).send({ error: "Servidor Daviplata no disponible" });
+  }
 });
 
 app.post("/intencionCompra", async (req, res) => {
@@ -120,7 +124,7 @@ app.post("/intencionCompra", async (req, res) => {
   let tipoDocumento = req.body.tipoDocumento;
   clientIP = req.ip || req.socket.remoteAddress;
 
-  console.log('------------------------------------');
+  console.log("------------------------------------");
   console.log({
     token: token,
     customer_key: customer_key,
@@ -128,38 +132,42 @@ app.post("/intencionCompra", async (req, res) => {
     numeroIdentificacion: numeroIdentificacion,
     tipoDocumento: tipoDocumento,
     metadata: {
-      endpoint: "/generarToken",
+      endpoint: "/intencionCompra",
       timestamp: new Date(),
-      clientIP: clientIP
-    }
+      clientIP: clientIP,
+    },
   });
   valorCompra = valor;
 
-  const headers = {
-    "Content-Type": "application/json",
-    Accept: "application/json",
-    "x-ibm-client-id": customer_key,
-    Authorization: `Bearer ${token}`,
-  };
-  let data = {
-    valor: "50",
-    numeroIdentificacion: numeroIdentificacion,
-    tipoDocumento: tipoDocumento,
-  };
+  try {
+    const headers = {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      "x-ibm-client-id": customer_key,
+      Authorization: `Bearer ${token}`,
+    };
+    let data = {
+      valor: "50",
+      numeroIdentificacion: numeroIdentificacion,
+      tipoDocumento: tipoDocumento,
+    };
 
-  let url = baseUrl + "/daviplata/v1/compra";
-  const response = await fetch(url, {
-    method: "POST",
-    headers: headers,
-    agent: sslConfiguredAgent(),
-    body: JSON.stringify(data),
-  });
+    let url = baseUrl + "/daviplata/v1/compra";
+    const response = await fetch(url, {
+      method: "POST",
+      headers: headers,
+      agent: sslConfiguredAgent(),
+      body: JSON.stringify(data),
+    });
 
-  const responseData = await response.json();
+    const responseData = await response.json();
 
-  console.log(responseData);
-  console.log('------------------------------------');
-  res.json(responseData);
+    console.log(responseData);
+    console.log("------------------------------------");
+    res.json(responseData);
+  } catch (e) {
+    res.status(500).send({ error: "Servidor Daviplata no disponible" });
+  }
 });
 
 app.post("/generarOTP", async (req, res) => {
@@ -169,43 +177,46 @@ app.post("/generarOTP", async (req, res) => {
   let tipoDocumento = req.body.tipoDocumento;
   clientIP = req.ip || req.socket.remoteAddress;
 
-  console.log('------------------------------------');
+  console.log("------------------------------------");
   console.log({
     customer_key: customer_key,
     notification_type: notification_type,
     numeroIdentificacion: numeroIdentificacion,
     tipoDocumento: tipoDocumento,
     metadata: {
-      endpoint: "/generarToken",
+      endpoint: "/generarOTP",
       timestamp: new Date(),
-      clientIP: clientIP
-    }
+      clientIP: clientIP,
+    },
   });
+  try {
+    const headers = {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      "x-ibm-client-id": customer_key,
+    };
+    let data = {
+      typeDocument: tipoDocumento,
+      numberDocument: numeroIdentificacion,
+      notificationType: notification_type,
+    };
 
-  const headers = {
-    "Content-Type": "application/json",
-    "Accept": "application/json",
-    "x-ibm-client-id": customer_key,
-  };
-  let data = {
-    typeDocument: tipoDocumento,
-    numberDocument: numeroIdentificacion,
-    notificationType: notification_type,
-  };
+    let url = baseUrl + "/otpSec/v1/read";
+    const response = await fetch(url, {
+      method: "POST",
+      headers: headers,
+      agent: sslConfiguredAgent(),
+      body: JSON.stringify(data),
+    });
 
-  let url = baseUrl + "/otpSec/v1/read";
-  const response = await fetch(url, {
-    method: "POST",
-    headers: headers,
-    agent: sslConfiguredAgent(),
-    body: JSON.stringify(data)
-  });
+    const responseData = await response.json();
 
-  const responseData = await response.json();
-
-  console.log(responseData);
-  console.log('------------------------------------');
-  res.json(responseData);
+    console.log(responseData);
+    console.log("------------------------------------");
+    res.json(responseData);
+  } catch (e) {
+    res.status(500).send({ error: "Servidor Daviplata no disponible" });
+  }
 });
 
 app.post("/autorizacionCompra", async (req, res) => {
@@ -218,7 +229,7 @@ app.post("/autorizacionCompra", async (req, res) => {
   let idTransaccion = Math.floor(Math.random() * 999999) + 1;
   clientIP = req.ip || req.socket.remoteAddress;
 
-  console.log('------------------------------------');
+  console.log("------------------------------------");
   console.log({
     token: token,
     otp: otp,
@@ -228,53 +239,67 @@ app.post("/autorizacionCompra", async (req, res) => {
     idTerminal: idTerminal,
     idTransaccion: idTransaccion + 0,
     metadata: {
-      endpoint: "/generarToken",
+      endpoint: "/autorizacionCompra",
       timestamp: new Date(),
-      clientIP: clientIP
-    }
+      clientIP: clientIP,
+    },
   });
 
-  const headers = {
-    "Content-Type": "application/json",
-    Accept: "application/json",
-    "x-ibm-client-id": customer_key,
-    Authorization: `Bearer ${token}`,
-  };
-  const data = {
-    otp: otp,
-    idSessionToken: idSession_Token,
-    idComercio: idComercio,
-    idTerminal: idTerminal,
-    idTransaccion: idTransaccion,
-  };
-  let url = baseUrl + "/daviplata/v1/confirmarCompra";
-  const response = await fetch(url, {
-    method: "POST",
-    headers: headers,
-    agent: sslConfiguredAgent(),
-    body: JSON.stringify(data),
-  });
+  try {
+    const headers = {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      "x-ibm-client-id": customer_key,
+      Authorization: `Bearer ${token}`,
+    };
+    const data = {
+      otp: otp,
+      idSessionToken: idSession_Token,
+      idComercio: idComercio,
+      idTerminal: idTerminal,
+      idTransaccion: idTransaccion,
+    };
+    let url = baseUrl + "/daviplata/v1/confirmarCompra";
+    const response = await fetch(url, {
+      method: "POST",
+      headers: headers,
+      agent: sslConfiguredAgent(),
+      body: JSON.stringify(data),
+    });
 
-  const responseData = await response.json();
-  console.log(responseData);
-  let resp = {
-    'transaccion': {
-      "idTransaccion": idTransaccion,
-      "destinoPago": idComercio,
-      "valorCompra": valorCompra,
-      "motivo": "Compra de productos",
-      "fechaTransaccion": responseData.fechaTransaccion ? responseData.fechaTransaccion : new Date(),
-      "numeroAprobacion": responseData.numAprobacion ? responseData.numAprobacion : 0,
-      "estado": responseData.estado ? responseData.estado : `Rechazado - ${responseData.mensajeError}`,
-      "idTransaccionAutorizador": responseData.idTransaccionAutorizador ? responseData.idTransaccionAutorizador : 0,
-      "codigoError": responseData.codigoError ? responseData.codigoError : 0,
-      "mensajeError": responseData.mensajeError ? responseData.mensajeError : ""
-    }
+    const responseData = await response.json();
+    console.log(responseData);
+    let resp = {
+      transaccion: {
+        idTransaccion: idTransaccion,
+        destinoPago: idComercio,
+        valorCompra: valorCompra,
+        motivo: "Compra de productos",
+        fechaTransaccion: responseData.fechaTransaccion
+          ? responseData.fechaTransaccion
+          : new Date(),
+        numeroAprobacion: responseData.numAprobacion
+          ? responseData.numAprobacion
+          : 0,
+        estado: responseData.estado
+          ? responseData.estado
+          : `Rechazado - ${responseData.mensajeError}`,
+        idTransaccionAutorizador: responseData.idTransaccionAutorizador
+          ? responseData.idTransaccionAutorizador
+          : 0,
+        codigoError: responseData.codigoError ? responseData.codigoError : 0,
+        mensajeError: responseData.mensajeError
+          ? responseData.mensajeError
+          : "",
+      },
+    };
+
+    console.log(resp);
+    console.log("------------------------------------");
+    res.json(resp);
+  } catch (e) {
+    res.status(500).send({ error: "Servidor Daviplata no disponible" });
   }
-  
-  console.log(resp);
-  console.log('------------------------------------');
-  res.json(resp);
 });
 
 app.post("/sendSMS", async (req, res) => {
