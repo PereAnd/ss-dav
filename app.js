@@ -147,7 +147,7 @@ app.post("/intencionCompra", async (req, res) => {
       Authorization: `Bearer ${token}`,
     };
     let data = {
-      valor: "50",
+      valor: "1",
       numeroIdentificacion: numeroIdentificacion,
       tipoDocumento: tipoDocumento,
     };
