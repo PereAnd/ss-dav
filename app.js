@@ -39,7 +39,7 @@ function sslConfiguredAgent() {
       "4yH18G8WBejaHactiZRatKEDxAJT/yJtN3dk+0ByDJ9rb3QeZn0JKj7BfF/2REw5\r\n" +
       "iulGLqUiDay5vIGW1s0QGsLSAufnPZ2cma+sVcMbGlqAtO1nGguiCad7sRTw2bZQ\r\n" +
       "Brtx0bE/DHtbVvmJd8hsHZYp8t+V2n1DQEsyJBrn/eQNXnaFF5NDEnq3hyQX\r\n" +
-      "-----END CERTIFICATE-----\r\n",
+      "-----END CERTIFICATE-----",
     key:
       "-----BEGIN PRIVATE KEY-----\r\n" +
       "MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCdL8srLvZy63FN\r\n" +
@@ -68,7 +68,7 @@ function sslConfiguredAgent() {
       "TiOsu+YafRr/grmAXdKTbT3Ccz9DQwEL6j5mX/L4dQnGL+aV48tYxyoaZ4Kmj7Qr\r\n" +
       "gy/p4SveGr5kVTRz5mIPIfM9LEdDHOlQOVYjuA2pWEETAaaBIsIdUVQPGv7evFDw\r\n" +
       "LvWYBuU7xzPyNKo06LvBRuxE\r\n" +
-      "-----END PRIVATE KEY-----",
+      "-----END PRIVATE KEY-----"
   };
   return new https.Agent(options);
 }
