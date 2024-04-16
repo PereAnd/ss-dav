@@ -287,6 +287,7 @@ app.post("/autorizacionCompra", async (req, res) => {
         idTransaccionAutorizador: responseData.idTransaccionAutorizador
           ? responseData.idTransaccionAutorizador
           : 0,
+        IP: req.ip || req.socket.remoteAddress,
         codigoError: responseData.codigoError ? responseData.codigoError : 0,
         mensajeError: responseData.mensajeError
           ? responseData.mensajeError
