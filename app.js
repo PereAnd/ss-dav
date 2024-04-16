@@ -269,6 +269,8 @@ app.post("/autorizacionCompra", async (req, res) => {
 
     const responseData = await response.json();
     console.log(responseData);
+    let ip = req.ip || req.socket.remoteAddress;
+    if (ip.startsWith("::ffff:")) ip = ip.slice(7);
     let resp = {
       transaccion: {
         idTransaccion: idTransaccion,
@@ -287,7 +289,7 @@ app.post("/autorizacionCompra", async (req, res) => {
         idTransaccionAutorizador: responseData.idTransaccionAutorizador
           ? responseData.idTransaccionAutorizador
           : 0,
-        IP: req.ip || req.socket.remoteAddress,
+        IP: ip,
         codigoError: responseData.codigoError ? responseData.codigoError : 0,
         mensajeError: responseData.mensajeError
           ? responseData.mensajeError
