@@ -7,8 +7,6 @@ import twilio from "twilio";
 
 const app = express();
 const port = 3000;
-let valorCompra = 0;
-let clientIP = "";
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -68,266 +66,171 @@ function sslConfiguredAgent() {
       "TiOsu+YafRr/grmAXdKTbT3Ccz9DQwEL6j5mX/L4dQnGL+aV48tYxyoaZ4Kmj7Qr\r\n" +
       "gy/p4SveGr5kVTRz5mIPIfM9LEdDHOlQOVYjuA2pWEETAaaBIsIdUVQPGv7evFDw\r\n" +
       "LvWYBuU7xzPyNKo06LvBRuxE\r\n" +
-      "-----END PRIVATE KEY-----"
+      "-----END PRIVATE KEY-----",
   };
   return new https.Agent(options);
 }
 
-app.post("/generarToken", async (req, res) => {
-  let grant_type = req.body.grant_type;
-  let client_id = req.body.client_id;
-  let client_secret = req.body.client_secret;
-  let scope = req.body.scope;
-  clientIP = req.ip || req.socket.remoteAddress;
-
-  console.log("------------------------------------");
-  console.log({
-    grant_type: grant_type,
-    client_id: client_id,
-    client_secret: client_secret,
-    scope: scope,
-    metadata: {
-      endpoint: "/generarToken",
-      timestamp: new Date(),
-      clientIP: clientIP,
-    },
-  });
-
+// #region Token
+app.post("/auth/token", async (req, res) => {
+  let { client_id, client_secret, grant_type, scope } = req.body;
+  consolelog(req.body, req.originalUrl, "INPUT");
   try {
     let url = baseUrl + "/oauth2Provider/type1/v1/token";
     const headers = {
       "Content-Type": "application/x-www-form-urlencoded",
       Accept: "application/json",
     };
-    const response = await fetch(url, {
+    const options = {
       method: "POST",
       headers: headers,
       agent: sslConfiguredAgent(),
       body: `grant_type=${grant_type}&client_id=${client_id}&client_secret=${client_secret}&scope=${scope}`,
-    });
-
+    };
+    consolelog(
+      { options: options, headers: headers, body: req.body },
+      req.originalUrl,
+      "INPUT-REQUEST"
+    );
+    const response = await fetch(url, options);
     const responseData = await response.json();
 
-    console.log(responseData);
-    console.log("------------------------------------");
+    consolelog(responseData, req.originalUrl, "OUTPUT");
     res.json(responseData);
   } catch (e) {
-    res.status(500).send({ error: "Servidor Daviplata no disponible" });
+    res.status(500).send(e);
   }
 });
 
-app.post("/intencionCompra", async (req, res) => {
-  let token = req.body.token;
-  let customer_key = req.body.customer_key;
-  let valor = req.body.valor;
-  let numeroIdentificacion = req.body.numeroIdentificacion;
-  let tipoDocumento = req.body.tipoDocumento;
-  clientIP = req.ip || req.socket.remoteAddress;
-
-  console.log("------------------------------------");
-  console.log({
-    token: token,
-    customer_key: customer_key,
-    valor: valor,
-    numeroIdentificacion: numeroIdentificacion,
-    tipoDocumento: tipoDocumento,
-    metadata: {
-      endpoint: "/intencionCompra",
-      timestamp: new Date(),
-      clientIP: clientIP,
-    },
-  });
-  valorCompra = valor;
-
+// #region /transfer-intention
+app.post("/transfer-intention", async (req, res) => {
+  let { authorization, customer_key } = req.headers;
+  let { valor, numeroIdentificacion, tipoDocumento } = req.body;
+  let token = authorization;
+  consolelog(
+    { headers: req.headers, body: req.body },
+    req.originalUrl,
+    "INPUT"
+  );
   try {
+    let url = baseUrl + "/daviplata/v1/compra";
     const headers = {
       "Content-Type": "application/json",
       Accept: "application/json",
       "x-ibm-client-id": customer_key,
       Authorization: `Bearer ${token}`,
     };
-    let data = {
+    let body = {
       valor: "1",
       numeroIdentificacion: numeroIdentificacion,
       tipoDocumento: tipoDocumento,
     };
-
-    let url = baseUrl + "/daviplata/v1/compra";
-    const response = await fetch(url, {
+    const options = {
       method: "POST",
       headers: headers,
       agent: sslConfiguredAgent(),
-      body: JSON.stringify(data),
-    });
-
+      body: JSON.stringify(body),
+    };
+    consolelog({ options, headers, body }, req.originalUrl, "INPUT-REQUEST");
+    const response = await fetch(url, options);
     const responseData = await response.json();
-
-    console.log(responseData);
-    console.log("------------------------------------");
+    consolelog(responseData, req.originalUrl, "OUTPUT");
     res.json(responseData);
   } catch (e) {
-    res.status(500).send({ error: "Servidor Daviplata no disponible" });
+    res.status(500).send(e);
   }
 });
 
-app.post("/generarOTP", async (req, res) => {
-  let customer_key = req.body.customer_key;
-  let notification_type = req.body.notification_type;
-  let numeroIdentificacion = req.body.numeroIdentificacion;
-  let tipoDocumento = req.body.tipoDocumento;
-  clientIP = req.ip || req.socket.remoteAddress;
+// #region /generate-otp
+app.post("/generate-otp", async (req, res) => {
+  let { customer_key } = req.headers;
+  let { notificationType, numberDocument, typeDocument } = req.body;
+  consolelog(
+    { headers: req.headers, body: req.body },
+    req.originalUrl,
+    "INPUT"
+  );
 
-  console.log("------------------------------------");
-  console.log({
-    customer_key: customer_key,
-    notification_type: notification_type,
-    numeroIdentificacion: numeroIdentificacion,
-    tipoDocumento: tipoDocumento,
-    metadata: {
-      endpoint: "/generarOTP",
-      timestamp: new Date(),
-      clientIP: clientIP,
-    },
-  });
   try {
+    let url = baseUrl + "/otpSec/v1/read";
     const headers = {
       "Content-Type": "application/json",
       Accept: "application/json",
       "x-ibm-client-id": customer_key,
     };
-    let data = {
-      typeDocument: tipoDocumento,
-      numberDocument: numeroIdentificacion,
-      notificationType: notification_type,
+    let body = {
+      typeDocument,
+      numberDocument,
+      notificationType,
     };
-
-    let url = baseUrl + "/otpSec/v1/read";
-    const response = await fetch(url, {
+    const options = {
       method: "POST",
       headers: headers,
       agent: sslConfiguredAgent(),
-      body: JSON.stringify(data),
-    });
-
+      body: JSON.stringify(body),
+    };
+    consolelog({ options, headers, body }, req.originalUrl, "INPUT-REQUEST");
+    const response = await fetch(url, options);
     const responseData = await response.json();
-
-    console.log(responseData);
-    console.log("------------------------------------");
+    consolelog(responseData, req.originalUrl, "OUTPUT");
     res.json(responseData);
   } catch (e) {
-    res.status(500).send({ error: "Servidor Daviplata no disponible" });
+    res.status(500).send(e);
   }
 });
 
-app.post("/autorizacionCompra", async (req, res) => {
-  let token = req.body.token;
-  let otp = req.body.otp;
-  let idSession_Token = req.body.idSession_Token;
-  let customer_key = req.body.customer_key;
-  let idComercio = req.body.idComercio;
-  let idTerminal = req.body.idTerminal;
-  let idTransaccion = Math.floor(Math.random() * 999999) + 1;
-  clientIP = req.ip || req.socket.remoteAddress;
-
-  console.log("------------------------------------");
-  console.log({
-    token: token,
-    otp: otp,
-    idSession_Token: idSession_Token,
-    customer_key: customer_key,
-    idComercio: idComercio,
-    idTerminal: idTerminal,
-    idTransaccion: idTransaccion + 0,
-    metadata: {
-      endpoint: "/autorizacionCompra",
-      timestamp: new Date(),
-      clientIP: clientIP,
-    },
-  });
+// #region /transfer-confirm
+app.post("/transfer-confirm", async (req, res) => {
+  let { authorization, customer_key } = req.headers;
+  let { otp, idSession_Token, idComercio, idTerminal } = req.body;
+  let token = authorization;
+  let idTransaccion = Math.round(Math.random() * 999999);
+  consolelog(
+    { headers: req.headers, body: req.body },
+    req.originalUrl,
+    "INPUT"
+  );
 
   try {
+    let url = baseUrl + "/daviplata/v1/confirmarCompra";
     const headers = {
       "Content-Type": "application/json",
       Accept: "application/json",
       "x-ibm-client-id": customer_key,
       Authorization: `Bearer ${token}`,
     };
-    const data = {
+    const body = {
       otp: otp,
       idSessionToken: idSession_Token,
       idComercio: idComercio,
       idTerminal: idTerminal,
       idTransaccion: idTransaccion,
     };
-    let url = baseUrl + "/daviplata/v1/confirmarCompra";
-    const response = await fetch(url, {
+    const options = {
       method: "POST",
       headers: headers,
       agent: sslConfiguredAgent(),
-      body: JSON.stringify(data),
-    });
-
-    const responseData = await response.json();
-    console.log(responseData);
+      body: JSON.stringify(body),
+    };
+    consolelog({ options, headers, body }, req.originalUrl, "INPUT-REQUEST");
+    const response = await fetch(url, options);
+    let responseData = await response.json();
     let ip = req.ip || req.socket.remoteAddress;
     if (ip.startsWith("::ffff:")) ip = ip.slice(7);
-    let resp = {
-      transaccion: {
-        idTransaccion: idTransaccion,
-        destinoPago: idComercio,
-        valorCompra: valorCompra,
-        motivo: "Compra de productos",
-        fechaTransaccion: responseData.fechaTransaccion
-          ? responseData.fechaTransaccion
-          : new Date(),
-        numeroAprobacion: responseData.numAprobacion
-          ? responseData.numAprobacion
-          : 0,
-        estado: responseData.estado
-          ? responseData.estado
-          : `Rechazado - ${responseData.mensajeError}`,
-        idTransaccionAutorizador: responseData.idTransaccionAutorizador
-          ? responseData.idTransaccionAutorizador
-          : 0,
-        IP: ip,
-        codigoError: responseData.codigoError ? responseData.codigoError : 0,
-        mensajeError: responseData.mensajeError
-          ? responseData.mensajeError
-          : "",
-      },
-    };
-
-    console.log(resp);
-    console.log("------------------------------------");
-    res.json(resp);
+    responseData = { ...responseData, ip };
+    consolelog(responseData, req.originalUrl, "OUTPUT");
+    res.json(responseData);
   } catch (e) {
-    res.status(500).send({ error: "Servidor Daviplata no disponible" });
+    res.status(500).send(e);
   }
 });
 
-app.post("/sendSMS", async (req, res) => {
-  let accountSid = req.body.accountSid;
-  let authToken = req.body.authToken;
-  let from = req.body.from;
-  let to = req.body.to;
-  let body = req.body.body;
-  console.log(from, to, body);
-
-  const client = twilio(accountSid, authToken);
-  client.messages
-    .create({
-      body: body,
-      from: from,
-      to: to,
-    })
-    .then((data) => {
-      if ("body" in data) {
-        return { status: "success", message: "OK" };
-      } else {
-        return { status: "error", message: "Error" };
-      }
-    });
-});
+// #region Consolelog
+function consolelog(data, endpoint, type) {
+  console.log("_________________________" + type + "_________________________");
+  console.log({ ...data, endpoint, timestamp: new Date() });
+  console.log("______________________________________________________________");
+}
 
 app.listen(port, () => {
   console.log(`Servidor escuchando en http://localhost:${port}`);
