@@ -6,7 +6,7 @@ import cors from "cors";
 import twilio from "twilio";
 
 const app = express();
-const port = 3000;
+const port = 3002;
 let valorCompra = 0;
 let clientIP = "";
 
