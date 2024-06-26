@@ -72,7 +72,7 @@ function sslConfiguredAgent() {
   };
   return new https.Agent(options);
 }
-
+//autorización token access
 app.post("/generarToken", async (req, res) => {
   let grant_type = req.body.grant_type;
   let client_id = req.body.client_id;
@@ -115,7 +115,7 @@ app.post("/generarToken", async (req, res) => {
     res.status(500).send({ error: "Servidor Daviplata no disponible" });
   }
 });
-
+//intención Compra con Daviplata 
 app.post("/intencionCompra", async (req, res) => {
   let token = req.body.token;
   let customer_key = req.body.customer_key;
@@ -169,7 +169,7 @@ app.post("/intencionCompra", async (req, res) => {
     res.status(500).send({ error: "Servidor Daviplata no disponible" });
   }
 });
-
+//codigo que autoriza daviplata para autentificar compra
 app.post("/generarOTP", async (req, res) => {
   let customer_key = req.body.customer_key;
   let notification_type = req.body.notification_type;
@@ -218,7 +218,7 @@ app.post("/generarOTP", async (req, res) => {
     res.status(500).send({ error: "Servidor Daviplata no disponible" });
   }
 });
-
+//autorizacion de compra
 app.post("/autorizacionCompra", async (req, res) => {
   let token = req.body.token;
   let otp = req.body.otp;
