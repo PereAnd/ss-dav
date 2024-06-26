@@ -70,35 +70,11 @@ function sslConfiguredAgent() {
   };
   return new https.Agent(options);
 }
-<<<<<<< HEAD
-//autorización token access
-app.post("/generarToken", async (req, res) => {
-  let grant_type = req.body.grant_type;
-  let client_id = req.body.client_id;
-  let client_secret = req.body.client_secret;
-  let scope = req.body.scope;
-  clientIP = req.ip || req.socket.remoteAddress;
-
-  console.log("------------------------------------");
-  console.log({
-    grant_type: grant_type,
-    client_id: client_id,
-    client_secret: client_secret,
-    scope: scope,
-    metadata: {
-      endpoint: "/generarToken",
-      timestamp: new Date(),
-      clientIP: clientIP,
-    },
-  });
-
-=======
 
 // #region Token
 app.post("/auth/token", async (req, res) => {
   let { client_id, client_secret, grant_type, scope } = req.body;
   consolelog(req.body, req.originalUrl, "INPUT");
->>>>>>> c4647dbc3c2fa2a075c0f3986b71b4eb9037b88b
   try {
     let url = baseUrl + "/oauth2Provider/type1/v1/token";
     const headers = {
@@ -125,32 +101,6 @@ app.post("/auth/token", async (req, res) => {
     res.status(500).send(e);
   }
 });
-<<<<<<< HEAD
-//intención Compra con Daviplata 
-app.post("/intencionCompra", async (req, res) => {
-  let token = req.body.token;
-  let customer_key = req.body.customer_key;
-  let valor = req.body.valor;
-  let numeroIdentificacion = req.body.numeroIdentificacion;
-  let tipoDocumento = req.body.tipoDocumento;
-  clientIP = req.ip || req.socket.remoteAddress;
-
-  console.log("------------------------------------");
-  console.log({
-    token: token,
-    customer_key: customer_key,
-    valor: valor,
-    numeroIdentificacion: numeroIdentificacion,
-    tipoDocumento: tipoDocumento,
-    metadata: {
-      endpoint: "/intencionCompra",
-      timestamp: new Date(),
-      clientIP: clientIP,
-    },
-  });
-  valorCompra = valor;
-
-=======
 
 // #region /transfer-intention
 app.post("/transfer-intention", async (req, res) => {
@@ -162,7 +112,6 @@ app.post("/transfer-intention", async (req, res) => {
     req.originalUrl,
     "INPUT"
   );
->>>>>>> c4647dbc3c2fa2a075c0f3986b71b4eb9037b88b
   try {
     let url = baseUrl + "/daviplata/v1/compra";
     const headers = {
@@ -191,15 +140,6 @@ app.post("/transfer-intention", async (req, res) => {
     res.status(500).send(e);
   }
 });
-<<<<<<< HEAD
-//codigo que autoriza daviplata para autentificar compra
-app.post("/generarOTP", async (req, res) => {
-  let customer_key = req.body.customer_key;
-  let notification_type = req.body.notification_type;
-  let numeroIdentificacion = req.body.numeroIdentificacion;
-  let tipoDocumento = req.body.tipoDocumento;
-  clientIP = req.ip || req.socket.remoteAddress;
-=======
 
 // #region /generate-otp
 app.post("/generate-otp", async (req, res) => {
@@ -210,7 +150,6 @@ app.post("/generate-otp", async (req, res) => {
     req.originalUrl,
     "INPUT"
   );
->>>>>>> c4647dbc3c2fa2a075c0f3986b71b4eb9037b88b
 
   try {
     let url = baseUrl + "/otpSec/v1/read";
@@ -239,34 +178,6 @@ app.post("/generate-otp", async (req, res) => {
     res.status(500).send(e);
   }
 });
-<<<<<<< HEAD
-//autorizacion de compra
-app.post("/autorizacionCompra", async (req, res) => {
-  let token = req.body.token;
-  let otp = req.body.otp;
-  let idSession_Token = req.body.idSession_Token;
-  let customer_key = req.body.customer_key;
-  let idComercio = req.body.idComercio;
-  let idTerminal = req.body.idTerminal;
-  let idTransaccion = Math.floor(Math.random() * 999999) + 1;
-  clientIP = req.ip || req.socket.remoteAddress;
-
-  console.log("------------------------------------");
-  console.log({
-    token: token,
-    otp: otp,
-    idSession_Token: idSession_Token,
-    customer_key: customer_key,
-    idComercio: idComercio,
-    idTerminal: idTerminal,
-    idTransaccion: idTransaccion + 0,
-    metadata: {
-      endpoint: "/autorizacionCompra",
-      timestamp: new Date(),
-      clientIP: clientIP,
-    },
-  });
-=======
 
 // #region /transfer-confirm
 app.post("/transfer-confirm", async (req, res) => {
@@ -279,7 +190,6 @@ app.post("/transfer-confirm", async (req, res) => {
     req.originalUrl,
     "INPUT"
   );
->>>>>>> c4647dbc3c2fa2a075c0f3986b71b4eb9037b88b
 
   try {
     let url = baseUrl + "/daviplata/v1/confirmarCompra";
